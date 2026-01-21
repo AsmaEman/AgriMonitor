@@ -60,14 +60,11 @@ export class DatabaseManager {
       const schemaPath = path.join(__dirname, 'schema.sql');
       const schema = await fs.readFile(schemaPath, 'utf-8');
 
-      // Execute schema in a transaction
-      await this.db!.exec('BEGIN TRANSACTION');
+      // Execute schema without explicit transaction (SQLite handles this)
       await this.db!.exec(schema);
-      await this.db!.exec('COMMIT');
 
       logger.info('Database schema initialized successfully');
     } catch (error) {
-      await this.db!.exec('ROLLBACK');
       logger.error('Failed to initialize database schema:', error);
       throw error;
     }
