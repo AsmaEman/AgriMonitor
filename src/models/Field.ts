@@ -8,12 +8,11 @@ import {
   Min,
   Max,
   IsObject,
-  ValidateNested,
   IsNotEmpty,
   validate,
   ValidationError,
 } from 'class-validator';
-import { Transform, Type, plainToClass, classToPlain } from 'class-transformer';
+import { Transform, plainToClass, classToPlain } from 'class-transformer';
 import { BaseModel, CropType, GrowthStage, GeoJSONPolygon, VALIDATION_CONSTRAINTS } from './types';
 
 export class Field implements BaseModel {
@@ -34,8 +33,6 @@ export class Field implements BaseModel {
   area_hectares!: number;
 
   @IsObject()
-  @ValidateNested()
-  @Type(() => Object)
   geometry!: GeoJSONPolygon;
 
   @IsOptional()

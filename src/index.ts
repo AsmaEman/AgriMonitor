@@ -5,6 +5,8 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
 import { logger } from './utils/logger';
+import { dbManager } from './database';
+import fieldRoutes from './routes/fieldRoutes';
 
 // Load environment variables
 dotenv.config();
@@ -48,6 +50,9 @@ app.get('/api', (_req, res) => {
   });
 });
 
+// Field management routes
+app.use('/api/fields', fieldRoutes);
+
 // Error handling middleware
 app.use((err: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   logger.error('Unhandled error:', err);
@@ -67,10 +72,18 @@ app.use('*', (req, res) => {
 
 // Start server only if this file is run directly
 if (require.main === module) {
-  app.listen(PORT, () => {
-    logger.info(`AgriMonitor Lite server running on port ${PORT}`);
-    logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
-  });
+  // Initialize database before starting server
+  dbManager.initialize()
+    .then(() => {
+      app.listen(PORT, () => {
+        logger.info(`AgriMonitor Lite server running on port ${PORT}`);
+        logger.info(`Environment: ${process.env.NODE_ENV || 'development'}`);
+      });
+    })
+    .catch((error) => {
+      logger.error('Failed to initialize database:', error);
+      process.exit(1);
+    });
 }
 
 export default app;

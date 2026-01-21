@@ -28,10 +28,12 @@ export interface FieldQueryOptions {
 }
 
 export class FieldService {
-  private db: Database;
+  private get db(): Database {
+    return dbManager.getDatabase();
+  }
 
   constructor() {
-    this.db = dbManager.getDatabase();
+    // Database will be accessed lazily through the getter
   }
 
   /**
@@ -44,18 +46,29 @@ export class FieldService {
     logger.info('Creating new field:', { name: fieldData.name, crop_type: fieldData.crop_type });
 
     // Create field instance for validation
-    const field = new Field({
-      ...fieldData,
-      created_at: new Date(),
-      updated_at: new Date()
-    });
+    const field = new Field();
+    field.name = fieldData.name;
+    field.crop_type = fieldData.crop_type;
+    field.area_hectares = fieldData.area_hectares;
+    field.geometry = fieldData.geometry;
+    if (fieldData.field_capacity !== undefined) field.field_capacity = fieldData.field_capacity;
+    if (fieldData.wilting_point !== undefined) field.wilting_point = fieldData.wilting_point;
+    if (fieldData.planting_date !== undefined) field.planting_date = fieldData.planting_date;
+    if (fieldData.growth_stage !== undefined) field.growth_stage = fieldData.growth_stage;
+    field.created_at = new Date();
+    field.updated_at = new Date();
 
     // Validate field data
     const validationErrors = await field.validate();
     if (validationErrors.length > 0) {
-      const errorMessages = validationErrors.map(error =>
-        Object.values(error.constraints || {}).join(', ')
-      ).join('; ');
+      const errorMessages = validationErrors.map(error => {
+        const constraints = error.constraints || {};
+        const property = error.property || 'unknown';
+        const messages = Object.values(constraints);
+        return `${property}: ${messages.join(', ') || 'validation failed'}`;
+      }).join('; ');
+
+      logger.error('Field validation failed:', { errors: validationErrors, errorMessages });
       throw new Error(`Field validation failed: ${errorMessages}`);
     }
 
@@ -186,18 +199,22 @@ export class FieldService {
     }
 
     // Create updated field instance for validation
-    const updatedField = new Field({
-      ...existingField,
-      ...updateData,
-      updated_at: new Date()
-    });
+    const updatedField = new Field();
+    Object.assign(updatedField, existingField);
+    Object.assign(updatedField, updateData);
+    updatedField.updated_at = new Date();
 
     // Validate updated field data
     const validationErrors = await updatedField.validate();
     if (validationErrors.length > 0) {
-      const errorMessages = validationErrors.map(error =>
-        Object.values(error.constraints || {}).join(', ')
-      ).join('; ');
+      const errorMessages = validationErrors.map(error => {
+        const constraints = error.constraints || {};
+        const property = error.property || 'unknown';
+        const messages = Object.values(constraints);
+        return `${property}: ${messages.join(', ') || 'validation failed'}`;
+      }).join('; ');
+
+      logger.error('Field validation failed during update:', { errors: validationErrors, errorMessages });
       throw new Error(`Field validation failed: ${errorMessages}`);
     }
 
