@@ -158,8 +158,8 @@ export class MigrationManager {
     logger.info(`Rollback to version ${targetVersion} completed successfully`);
   }
 
-  public getMigrationStatus(): { version: number; name: string; applied: boolean }[] {
-    const currentVersion = this.getCurrentVersion();
+  public async getMigrationStatus(): Promise<{ version: number; name: string; applied: boolean }[]> {
+    const currentVersion = await this.getCurrentVersion();
 
     return this.migrations.map(migration => ({
       version: migration.version,
