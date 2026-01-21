@@ -21,28 +21,28 @@ This implementation plan converts the AgriMonitor Lite design into a series of T
     - Set up database indexes for time-series queries
     - _Requirements: 7.1, 7.4_
 
-  - [-] 2.2 Write property test for database integrity
+  - [x] 2.2 Write property test for database integrity
     - **Property 13: Database Integrity**
     - **Validates: Requirements 7.1, 7.2, 7.3**
 
-  - [ ] 2.3 Implement TypeScript data models and interfaces
+  - [x] 2.3 Implement TypeScript data models and interfaces
     - Create Field, SatelliteObservation, WeatherData, and Recommendation models
     - Implement data validation using class-validator
     - Add serialization/deserialization methods
     - _Requirements: 1.1, 2.6, 3.1_
 
-  - [ ] 2.4 Write property test for field creation and persistence
+  - [x] 2.4 Write property test for field creation and persistence
     - **Property 1: Field Creation and Persistence**
     - **Validates: Requirements 1.1, 1.5**
 
-- [ ] 3. Implement field management system
-  - [ ] 3.1 Create field CRUD operations
+- [-] 3. Implement field management system
+  - [x] 3.1 Create field CRUD operations
     - Implement field creation with validation
     - Add field retrieval, update, and deletion methods
     - Handle GeoJSON geometry parsing and validation
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ] 3.2 Write property test for GeoJSON parsing consistency
+  - [-] 3.2 Write property test for GeoJSON parsing consistency
     - **Property 2: GeoJSON Parsing Consistency**
     - **Validates: Requirements 1.2**
 
