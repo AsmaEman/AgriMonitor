@@ -15,13 +15,13 @@ This implementation plan converts the AgriMonitor Lite design into a series of T
   - _Requirements: 9.3_
 
 - [ ] 2. Implement database layer and data models
-  - [-] 2.1 Create SQLite database schema and connection manager
+  - [x] 2.1 Create SQLite database schema and connection manager
     - Implement database initialization with proper schema
     - Create connection pooling and transaction management
     - Set up database indexes for time-series queries
     - _Requirements: 7.1, 7.4_
 
-  - [ ] 2.2 Write property test for database integrity
+  - [-] 2.2 Write property test for database integrity
     - **Property 13: Database Integrity**
     - **Validates: Requirements 7.1, 7.2, 7.3**
 
